@@ -1,0 +1,340 @@
+[
+    {
+        "instruction": [
+            [
+                "[external]",
+                null
+            ],
+            [
+                "alloca",
+                [
+                    "%1 = alloca i32, align 4"
+                ]
+            ],
+            [
+                "alloca",
+                [
+                    "%2 = alloca i32, align 4"
+                ]
+            ],
+            [
+                "store",
+                [
+                    "store i32 0, i32* %1, align 4"
+                ]
+            ],
+            [
+                "store",
+                [
+                    "store i32 0, i32* %2, align 4"
+                ]
+            ],
+            [
+                "store",
+                [
+                    "store i32 1, i32* %2, align 4"
+                ]
+            ],
+            [
+                "store",
+                [
+                    "store i32 2, i32* %2, align 4"
+                ]
+            ],
+            [
+                "load",
+                [
+                    "%3 = load i32, i32* %2, align 4"
+                ]
+            ],
+            [
+                "call",
+                [
+                    "%4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str, i64 0, i64 0), i32 %3)"
+                ]
+            ],
+            [
+                "ret",
+                [
+                    "ret i32 0"
+                ]
+            ],
+            [
+                "; undefined function",
+                [
+                    ""
+                ]
+            ]
+        ],
+        "variable": [
+            [
+                "i32*",
+                "%1"
+            ],
+            [
+                "i32*",
+                "%2"
+            ],
+            [
+                "i32*",
+                "%2"
+            ],
+            [
+                "i32",
+                "%3"
+            ]
+        ],
+        "constant": [
+            [
+                "i32",
+                "1"
+            ],
+            [
+                "i32",
+                "0"
+            ],
+            [
+                "i32",
+                "2"
+            ],
+            [
+                "i8*",
+                "getelementptr"
+            ]
+        ],
+        "varray": [],
+        "vvector": [],
+        "carray": [],
+        "cvector": []
+    },
+    {
+        "instruction_control_instruction": [
+            [
+                1,
+                2
+            ],
+            [
+                2,
+                3
+            ],
+            [
+                3,
+                4
+            ],
+            [
+                4,
+                5
+            ],
+            [
+                5,
+                6
+            ],
+            [
+                6,
+                7
+            ],
+            [
+                7,
+                8
+            ],
+            [
+                8,
+                9
+            ]
+        ],
+        "instruction_call_instruction": [
+            [
+                0,
+                1
+            ],
+            [
+                9,
+                0
+            ],
+            [
+                0,
+                10
+            ],
+            [
+                10,
+                0
+            ],
+            [
+                8,
+                10
+            ],
+            [
+                10,
+                8
+            ]
+        ],
+        "instruction_data_variable": [
+            [
+                1,
+                0
+            ],
+            [
+                2,
+                1
+            ],
+            [
+                2,
+                2
+            ],
+            [
+                7,
+                3
+            ],
+            [
+                3,
+                0
+            ],
+            [
+                4,
+                1
+            ],
+            [
+                5,
+                1
+            ],
+            [
+                6,
+                2
+            ]
+        ],
+        "instruction_data_varray": [],
+        "instruction_data_vvector": [],
+        "variable_data_instruction": [
+            [
+                0,
+                3
+            ],
+            [
+                1,
+                4
+            ],
+            [
+                1,
+                5
+            ],
+            [
+                2,
+                6
+            ],
+            [
+                1,
+                7
+            ],
+            [
+                3,
+                8
+            ]
+        ],
+        "varray_data_instruction": [],
+        "varray_data_varray": [],
+        "vvector_data_vvector": [],
+        "vvector_data_instruction": [],
+        "constant_data_instruction": [
+            [
+                0,
+                1
+            ],
+            [
+                0,
+                2
+            ],
+            [
+                0,
+                5
+            ],
+            [
+                1,
+                3
+            ],
+            [
+                1,
+                4
+            ],
+            [
+                1,
+                9
+            ],
+            [
+                2,
+                6
+            ],
+            [
+                3,
+                8
+            ]
+        ],
+        "carray_data_instruction": [],
+        "carray_data_carray": [],
+        "cvector_data_instruction": [],
+        "cvector_data_cvector": [],
+        "instruction_data_constant": [],
+        "instruction_data_carray": [],
+        "instruction_data_cconstant": []
+    },
+    {
+        "instruction_control_instruction": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "instruction_call_instruction": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "instruction_data_variable": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "instruction_data_varray": [],
+        "instruction_data_vvector": [],
+        "variable_data_instruction": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+        ],
+        "varray_data_instruction": [],
+        "varray_data_varray": [],
+        "vvector_data_vvector": [],
+        "vvector_data_instruction": [],
+        "constant_data_instruction": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "carray_data_instruction": [],
+        "carray_data_carray": [],
+        "cvector_data_instruction": [],
+        "cvector_data_cvector": [],
+        "instruction_data_constant": [],
+        "instruction_data_carray": [],
+        "instruction_data_cconstant": []
+    }
+]
