@@ -125,10 +125,7 @@ for graph in graphs:
     instruction_node_counter = 0
     instruction_node_file_strings = ["graph_id,node_id,feat\n"]
     for instruction_node in nodes["instruction"]:
-        full_text_of_instruction_node = str(instruction_node[0])
-        instruction_node_str = ""
-        for i in range(2, len(full_text_of_instruction_node) - 2):
-            instruction_node_str += full_text_of_instruction_node[i]
+        instruction_node_str = instruction_node[1][0] or ""
         tokens = instruction_node_str.split(" ")
         instruction_node_embed_str = ""
         prev_token_length = len(tokens)
@@ -278,16 +275,132 @@ for graph in graphs:
         f.writelines(constant_node_file_strings)
 
     # get embeddings for varray
-    # TODO
+    varray_node_counter = 0
+    varray_node_file_strings = ["graph_id,node_id,feat\n"]
+    for varray_node in nodes["varray"]:
+        text_embed_list = []
+        text_of_varray_node = varray_node[1]
+        for token in text_of_varray_node.split(" "):
+            if token in feature_map:
+                lookup_tensor = torch.tensor([feature_map[token]], dtype=torch.long)
+                text_embed = embeds(lookup_tensor)
+                text_embed_real_numpy = text_embed.detach().numpy()
+                for value in text_embed_real_numpy[0]:
+                    text_embed_list.append(str(value))
+            else:
+                text_embed_list = ["0.0", "0.0", "0.0"]
+        
+        for pad in range(0, 120 - len(text_embed_list)):
+            text_embed_list.append("0.0")
+
+        varray_node_embed_str = ""
+        for i in range(0, len(text_embed_list) - 1):
+            varray_node_embed_str += component + ","
+        varray_node_embed_str += text_embed_list[len(text_embed_list) - 1]
+
+        varray_node_file_string = str(count) + "," + str(varray_node_counter) + "," + "\"" + varray_node_embed_str + "\"\n"
+        varray_node_file_strings.append(varray_node_file_string)
+
+        varray_node_counter += 1
+
+    with open("dgl/nodes_3.csv", "w") as f:
+        f.writelines(varray_node_file_strings)
         
     # get embeddings for vvector
-    # TODO
+    vvector_node_counter = 0
+    vvector_node_file_strings = ["graph_id,node_id,feat\n"]
+    for vvector_node in nodes["vvector"]:
+        text_of_vvector_node = str(vvector_node[0])
+        text_embed_list = []
+        for token in text_of_vvector_node.split(" "):
+            if token in feature_map:
+                lookup_tensor = torch.tensor([feature_map[token]], dtype=torch.long)
+                text_embed = embeds(lookup_tensor)
+                text_embed_real_numpy = text_embed.detach().numpy()
+                for value in text_embed_real_numpy[0]:
+                    text_embed_list.append(str(value))
+            else:
+                text_embed_list = ["0.0", "0.0", "0.0"]
+    
+        for pad in range(0, 120 - len(text_embed_list)):
+            text_embed_list.append("0.0")
+
+        vvector_node_embed_str = ""
+        for i in range(0, len(text_embed_list) - 1):
+            vvector_node_embed_str += component + ","
+        vvector_node_embed_str += text_embed_list[len(text_embed_list) - 1]
+
+        vvector_node_file_string = str(count) + "," + str(vvector_node_counter) + "," + "\"" + vvector_node_embed_str + "\"\n"
+        vvector_node_file_strings.append(vvector_node_file_string)
+
+        vvector_node_counter += 1
+
+    with open("dgl/nodes_4.csv", "w") as f:
+        f.writelines(vvector_node_file_strings)
         
     # get embeddings for carray
-    # TODO
+    carray_node_counter = 0
+    carray_node_file_strings = ["graph_id,node_id,feat\n"]
+    for carray_node in nodes["carray"]:
+        text_of_carray_node = str(carray_node[0])
+        text_embed_list = []
+        for token in text_of_carray_node.split(" "):
+            if token in feature_map:
+                lookup_tensor = torch.tensor([feature_map[token]], dtype=torch.long)
+                text_embed = embeds(lookup_tensor)
+                text_embed_real_numpy = text_embed.detach().numpy()
+                for value in text_embed_real_numpy[0]:
+                    text_embed_list.append(str(value))
+            else:
+                text_embed_list = ["0.0", "0.0", "0.0"]
+    
+        for pad in range(0, 120 - len(text_embed_list)):
+            text_embed_list.append("0.0")
+
+        carray_node_embed_str = ""
+        for i in range(0, len(text_embed_list) - 1):
+            carray_node_embed_str += component + ","
+        carray_node_embed_str += text_embed_list[len(text_embed_list) - 1]
+
+        carray_node_file_string = str(count) + "," + str(carray_node_counter) + "," + "\"" + carray_node_embed_str + "\"\n"
+        carray_node_file_strings.append(carray_node_file_string)
+
+        carray_node_counter += 1
+
+    with open("dgl/nodes_5.csv", "w") as f:
+        f.writelines(carray_node_file_strings)
     
     # get embeddings for cvector
-    # TODO
+    cvector_node_counter = 0
+    cvector_node_file_strings = ["graph_id,node_id,feat\n"]
+    for cvector_node in nodes["cvector"]:
+        text_of_cvector_node = str(cvector_node[0])
+        text_embed_list = []
+        for token in text_of_cvector_node.split(" "):
+            if token in feature_map:
+                lookup_tensor = torch.tensor([feature_map[token]], dtype=torch.long)
+                text_embed = embeds(lookup_tensor)
+                text_embed_real_numpy = text_embed.detach().numpy()
+                for value in text_embed_real_numpy[0]:
+                    text_embed_list.append(str(value))
+            else:
+                text_embed_list = ["0.0", "0.0", "0.0"]
+    
+        for pad in range(0, 120 - len(text_embed_list)):
+            text_embed_list.append("0.0")
+
+        cvector_node_embed_str = ""
+        for i in range(0, len(text_embed_list) - 1):
+            cvector_node_embed_str += component + ","
+        cvector_node_embed_str += text_embed_list[len(text_embed_list) - 1]
+
+        cvector_node_file_string = str(count) + "," + str(cvector_node_counter) + "," + "\"" + cvector_node_embed_str + "\"\n"
+        cvector_node_file_strings.append(cvector_node_file_string)
+
+        cvector_node_counter += 1
+
+    with open("dgl/nodes_6.csv", "w") as f:
+        f.writelines(cvector_node_file_strings)
 
     # get node embeddings
     for node_type in nodes.keys():
@@ -348,31 +461,3 @@ for graph in graphs:
     count += 1
 
 print(count)
-
-
-
-
-
-# node_types = []
-# edge_types = []
-# dgl_dict = {}
-
-# for etype in edges:
-#     edge_tuple = tuple(etype.split("_"))
-#     dgl_dict[edge_tuple] = []
-#     for edge in edges[etype]:
-#         dgl_dict[edge_tuple].append(torch.tensor(edge))        
-
-# dgl_graph = dgl.heterograph(dgl_dict)
-
-# enum_array = []
-# for node in nodes["instruction"]:
-#     enum_array.append(llvm_instruction_map[node[0]])
-# dgl_graph.nodes["instruction"].data['instruction_mapping'] = torch.tensor(enum_array)
-
-# # Need a way to tokenize information about the nodes
-
-# node_data = dgl_graph.ndata
-# node_df = pd.DataFrame({key: node_data[key] for key in node_data.keys()})
-
-# print(node_df)
