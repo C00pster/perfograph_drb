@@ -4,6 +4,7 @@ import torch.nn as nn
 import numpy as np
 from torch_geometric.data import HeteroData
 import re
+import os
 
 def is_numeric(text):
     if re.match(r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$", text):
@@ -89,10 +90,15 @@ def get_embedding_for_token(token, feature_map, embeds):
         return embeds(lookup_tensor).detach().numpy().flatten().tolist()
     else:
         return [0.0, 0.0, 0.0]
-    
-def write_embeddings_to_csv(file_path, headers, data_strings):
-    with open(file_path, "w") as f:
-        f.writelines([headers] + data_strings)
+
+node_files = [open(f"csv/nodes_{i}.csv", "w") for i in range(7)]
+edge_files = [open(f"csv/edges_{i}.csv", "w") for i in range(18)]
+
+for file in node_files:
+    file.write("graph_id,node_id,feat\n")
+
+for file in edge_files:
+    file.write("graph_id,src_id,dst_id\n")
 
 feat_count = 0
 feature_file = open("feature_map_file_pg_plus_text_all_dev_map_with_nvidia.txt", 'r')
@@ -106,8 +112,12 @@ for feature_line in feature_lines:
 embeds = nn.Embedding(feat_count, 3) # feat_count words in vocab, 3 dimensional embeddings
 
 graphs = []
-with open("perfograph/DRB001-antidep1-orig-yes.json", "r") as f:
-    graphs.append(json.load(f))
+directory = "perfograph"
+
+for filename in os.listdir(directory):
+    if filename.endswith(".json"):
+        with open(os.path.join(directory, filename)) as f:
+            graphs.append(json.load(f))
 
 data_list = []
 
@@ -149,7 +159,7 @@ for graph in graphs:
         instruction_node_file_strings.append(instruction_node_file_string)
         instruction_node_counter += 1
 
-    write_embeddings_to_csv("dgl/nodes_0.csv", "graph_id,node_id,feat\n", instruction_node_file_strings)
+    node_files[0].writelines(instruction_node_file_strings)
 
     # get embeddings variable nodes
     variable_node_counter = 0
@@ -172,7 +182,7 @@ for graph in graphs:
         variable_node_file_strings.append(variable_node_file_string)
         variable_node_counter += 1
 
-    write_embeddings_to_csv("dgl/nodes_1.csv", "graph_id,node_id,feat\n", variable_node_file_strings)
+    node_files[1].writelines(variable_node_file_strings)
 
     # get embeddings for constant nodes
     constant_node_counter = 0
@@ -182,7 +192,10 @@ for graph in graphs:
         text_type_of_constant_node = str(constant_node[0])
         text_embed_list = get_embedding_for_token(text_type_of_constant_node, feature_map, embeds)
         text_value_of_constant_node = str(constant_node[1])
-        digit_emb_vec_of_text_value = get_digit_emb_of_number(text_value_of_constant_node, feature_map)
+        text_embed_list.extend(get_digit_emb_of_number(text_value_of_constant_node, feature_map))
+
+        if len(text_embed_list) < 6:
+            breakpoint()
 
         constant_node_embed_str += ("\"" + str(text_embed_list[0]) + ',' +
                             str(text_embed_list[1]) + ',' +
@@ -199,7 +212,7 @@ for graph in graphs:
         constant_node_file_strings.append(constant_node_file_string)
         constant_node_counter += 1
 
-    write_embeddings_to_csv("dgl/nodes_2.csv", "graph_id,node_id,feat\n", constant_node_file_strings)
+    node_files[2].writelines(constant_node_file_strings)
 
     # get embeddings for varray
     varray_node_counter = 0
@@ -225,11 +238,11 @@ for graph in graphs:
 
         varray_node_counter += 1
 
-    write_embeddings_to_csv("dgl/nodes_3.csv", "graph_id,node_id,feat\n", varray_node_file_strings)
+    node_files[3].writelines(varray_node_file_strings)
         
     # get embeddings for vvector
     vvector_node_counter = 0
-    vvector_node_file_strings = ["graph_id,node_id,feat\n"]
+    vvector_node_file_strings = []
     for vvector_node in nodes["vvector"]:
         text_of_vvector_node = str(vvector_node[0])
         text_embed_list = []
@@ -251,11 +264,11 @@ for graph in graphs:
 
         vvector_node_counter += 1
 
-    write_embeddings_to_csv("dgl/nodes_4.csv", "graph_id,node_id,feat\n", vvector_node_file_strings)
+    node_files[4].writelines(vvector_node_file_strings)
         
     # get embeddings for carray
     carray_node_counter = 0
-    carray_node_file_strings = ["graph_id,node_id,feat\n"]
+    carray_node_file_strings = []
     for carray_node in nodes["carray"]:
         text_of_carray_node = str(carray_node[0])
         text_embed_list = []
@@ -277,11 +290,11 @@ for graph in graphs:
 
         carray_node_counter += 1
 
-    write_embeddings_to_csv("dgl/nodes_5.csv", "graph_id,node_id,feat\n", carray_node_file_strings)
+    node_files[5].writelines(carray_node_file_strings)
     
     # get embeddings for cvector
     cvector_node_counter = 0
-    cvector_node_file_strings = ["graph_id,node_id,feat\n"]
+    cvector_node_file_strings = []
     for cvector_node in nodes["cvector"]:
         text_of_cvector_node = str(cvector_node[0])
         text_embed_list = []
@@ -303,7 +316,7 @@ for graph in graphs:
 
         cvector_node_counter += 1
 
-    write_embeddings_to_csv("dgl/nodes_6.csv", "graph_id,node_id,feat\n", cvector_node_file_strings)
+    node_files[6].writelines(cvector_node_file_strings)
 
     # get node embeddings
     for node_type in nodes.keys():
@@ -332,7 +345,7 @@ for graph in graphs:
         edges_index = []
         source_node = []
         des_node = []
-        edge_lines = ["graph_id,src_id,dst_id\n"]
+        edge_lines = []
         for edge in edges[edge_type]:
             source_node.append(edge[0])
             des_node.append(edge[1])
@@ -343,7 +356,7 @@ for graph in graphs:
         edges_index.append(des_node)
         data[edge_type_split[0], edge_type_split[1], edge_type_split[2]].edge_index = edges_index
     for i in range(len(edges.keys())):
-        write_embeddings_to_csv(f"dgl/edges_{i}.csv", "graph_id,src_id,dst_id\n", edges_lines[i])
+        edge_files[i].writelines(edges_lines[i])
 
     # get edge position embeddings
     for edge_type in edge_positions.keys():
@@ -362,3 +375,62 @@ for graph in graphs:
     count += 1
 
 print(count)
+
+yaml_content = """
+dataset_name: drb
+edge_data:
+  - file_name: edges_0.csv
+    etype: ["instruction", "control", "instruction"]
+  - file_name: edges_1.csv
+    etype: ["instruction", "call", "instruction"]
+  - file_name: edges_2.csv
+    etype: ["instruction", "data", "variable"]
+  - file_name: edges_3.csv
+    etype: ["variable", "data", "varray"]
+  - file_name: edges_4.csv
+    etype: ["instruction", "data", "vvector"]
+  - file_name: edges_5.csv
+    etype: ["variable", "data", "instruction"]
+  - file_name: edges_6.csv
+    etype: ["varray", "data", "instruction"]
+  - file_name: edges_7.csv
+    etype: ["varray", "data", "varray"]
+  - file_name: edges_8.csv
+    etype: ["vvector", "data", "vvector"]
+  - file_name: edges_9.csv
+    etype: ["vvector", "data", "instruction"]
+  - file_name: edges_10.csv
+    etype: ["constant", "data", "instruction"]
+  - file_name: edges_11.csv
+    etype: ["carray", "data", "instruction"]
+  - file_name: edges_12.csv
+    etype: ["carray", "data", "carray"]
+  - file_name: edges_13.csv
+    etype: ["cvector", "data", "instruction"]
+  - file_name: edges_14.csv
+    etype: ["cvector", "data", "cvector"]
+  - file_name: edges_15.csv
+    etype: ["instruction", "data", "constant"]
+  - file_name: edges_16.csv
+    etype: ["instruction", "data", "carray"]
+  - file_name: edges_17.csv
+    etype: ["instruction", "data", "cvector"]
+node_data:
+  - file_name: nodes_0.csv
+    ntype: instruction
+  - file_name: nodes_1.csv
+    ntype: variable
+  - file_name: nodes_2.csv
+    ntype: constant
+  - file_name: nodes_3.csv
+    ntype: varray
+  - file_name: nodes_4.csv
+    ntype: vvector
+  - file_name: nodes_5.csv
+    ntype: carray
+  - file_name: nodes_6.csv
+    ntype: cvector
+"""
+
+with open(os.path.join('csv', 'meta.yaml'), 'w') as f:
+    f.write(yaml_content.strip())

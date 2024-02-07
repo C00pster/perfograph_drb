@@ -1,0 +1,9 @@
+This project can generate a CSV Dataset of Perfograph in the DGL format
+
+Running `python to_pg.py` will take all supported programs from the samples/ directory, convert them into Perfograph representations, and store the json in perfograph/
+Files that had compilation errors will be printed to the console in the form `Error files: [filename1, filename2, ...]`
+
+After getting the Perfograph representations of the programs, a dgl dataset in the CSV format can be generated with `python to_dgl_csv.py`.
+This will take all Perfograph json graphs and convert them into the CSV dataset found in csv/
+
+To run both programs consecutively, run `sh generate_dataset.sh`
